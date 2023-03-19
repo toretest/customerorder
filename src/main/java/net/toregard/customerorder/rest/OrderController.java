@@ -19,6 +19,23 @@ public class OrderController {
 
     Logger logger = Logger.getLogger("OrderController");
 
+    /*
+    Example
+    {
+    "customerId": "5a572f48-68b1-4f94-a17a-0fac9de782c8",
+    "orderId": "6e6363fc-6458-49fa-a119-c4f4b9619de6",
+    "orderItems": [
+        {
+            "orderItemId": "1",
+            "quantity": 11
+        },
+        {
+            "orderItemId": "2",
+            "quantity": 22
+        }
+    ]
+}
+     */
     @PostMapping
     public String createOrder(@RequestBody CreateOrderRestModel createOrderRestModel){
         logger.info(createOrderRestModel.toString());
