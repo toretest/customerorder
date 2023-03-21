@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 import java.util.List;
 
@@ -11,8 +12,6 @@ import java.util.List;
 @Builder
 public class CreateOrderRestModel {
     private String customerId;
-    private String orderId;
-
-    private List<OrderItem> orderItems;
+    private List<OrderItem> items;
 
 }
