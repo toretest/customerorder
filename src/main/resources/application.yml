@@ -1,2 +1,20 @@
 server:
   port: 8080
+spring:
+  datasource:
+    url: jdbc:h2:file:~/orders;AUTO_SERVER=true
+    password: password
+    username: sa
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+  # http://localhost:8080/h2-console/
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-admin-password: password
+        # Allowing remote access, default value: false
+        web-allow-others: true
