@@ -45,6 +45,9 @@ public class OrderAggregateCommandHandler {
 
     /***
      * Handle CreateOrderCommand
+     *
+     * Command handle function. Register to the event bus og type CreateOrderCommand.
+     *
      * Can validate here!
      * Create a event here!
      * @param createOrderCommand
@@ -58,13 +61,16 @@ public class OrderAggregateCommandHandler {
         }
         OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent();
         BeanUtils.copyProperties(createOrderCommand, orderCreatedEvent);
-        //  Sent to @EventSourcingHandler
+        //  Sent to event bus. Recevier: @EventSourcingHandler
           ApplyMore applyMore = AggregateLifecycle.apply(orderCreatedEvent);
           applyMore.andThen(() -> logger.info("OrderAggregateCommandHandler CommandHandler Order " + createOrderCommand.getOrderId()));
     }
 
     /**
      * on (NB! Standard convention)
+     *
+     * Only handle his own OrderCreatedEvent events
+     *
      * Handle orderCreatedEvent (update)
      * <p>
      * Only update the aggregate state here!

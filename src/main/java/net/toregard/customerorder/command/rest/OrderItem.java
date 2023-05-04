@@ -1,12 +1,14 @@
 package net.toregard.customerorder.command.rest;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderItem {
     private String orderItemId;
-    private Integer quantity;
-    private String name;
+    private Integer quantity=null;
+    private String name=null;
 }

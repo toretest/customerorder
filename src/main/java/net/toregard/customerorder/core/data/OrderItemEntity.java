@@ -17,4 +17,14 @@ public class OrderItemEntity implements Serializable {
     private String orderId;
     private Integer quantity;
     private String name;
+
+    @Override
+    public String toString() {
+        return "OrderItemEntity{" +
+                "orderItemId='" + orderItemId + '\'' +
+                ", orderId='" + orderId + '\'' +
+                ", quantity=" + quantity +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
