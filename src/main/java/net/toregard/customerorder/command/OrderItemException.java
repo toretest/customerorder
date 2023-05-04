@@ -1,6 +1,6 @@
 package net.toregard.customerorder.command;
 
-import net.toregard.customerorder.errorhandlig.RootException;
+import net.toregard.customerorder.core.errorhandlig.RootException;
 
 public class OrderItemException extends RootException {
 

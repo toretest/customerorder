@@ -1,4 +1,4 @@
-package net.toregard.customerorder.errorhandlig;
+package net.toregard.customerorder.core.errorhandlig;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
