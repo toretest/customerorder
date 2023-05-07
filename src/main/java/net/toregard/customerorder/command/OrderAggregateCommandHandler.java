@@ -54,11 +54,12 @@ public class OrderAggregateCommandHandler {
      */
     @CommandHandler
     public OrderAggregateCommandHandler(CreateOrderCommand createOrderCommand) {
-        if (createOrderCommand.getItems() == null || createOrderCommand.getItems().isEmpty()) {
+        //Validate move to the interceptor
+       /* if (createOrderCommand.getItems() == null || createOrderCommand.getItems().isEmpty()) {
             final String errorMessage = "Missing item when creating order " + createOrderCommand.getOrderId();
             logger.info(errorMessage);
             throw new OrderItemException(1, errorMessage);
-        }
+        }*/
         OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent();
         BeanUtils.copyProperties(createOrderCommand, orderCreatedEvent);
         //  Sent to event bus. Recevier: @EventSourcingHandler
