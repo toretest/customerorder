@@ -18,3 +18,8 @@ spring:
         web-admin-password: password
         # Allowing remote access, default value: false
         web-allow-others: true
+axon:
+  eventhandling:
+    processors:
+        customerOrder-group:
+            mode: subscribing

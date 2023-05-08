@@ -5,12 +5,14 @@ import net.toregard.customerorder.core.data.OrderEntityRepository;
 import net.toregard.customerorder.core.data.OrderItemEntity;
 import net.toregard.customerorder.core.data.OrderItemEntityRepository;
 import net.toregard.customerorder.core.events.OrderCreatedEvent;
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@ProcessingGroup("customerOrder-group")
 public class OrderEventshandler {
 private final OrderEntityRepository orderEntityRepository;
 private final OrderItemEntityRepository orderItemEntityRepository;

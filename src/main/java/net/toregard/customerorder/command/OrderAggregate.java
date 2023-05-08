@@ -25,8 +25,8 @@ import java.util.logging.Logger;
  * handle events
  */
 @Aggregate
-public class OrderAggregateCommandHandler {
-    Logger logger = Logger.getLogger("OrderAggregateCommandHandler");
+public class OrderAggregate {
+    Logger logger = Logger.getLogger("OrderAggregate");
     /**
      * |
      * Help assosiate commandhandler with aggregate
@@ -40,7 +40,7 @@ public class OrderAggregateCommandHandler {
     /**
      * Needed when get all events when regenerate state by events
      */
-    public OrderAggregateCommandHandler() {
+    public OrderAggregate() {
     }
 
     /***
@@ -53,7 +53,7 @@ public class OrderAggregateCommandHandler {
      * @param createOrderCommand
      */
     @CommandHandler
-    public OrderAggregateCommandHandler(CreateOrderCommand createOrderCommand) {
+    public OrderAggregate(CreateOrderCommand createOrderCommand) {
         //Validate move to the interceptor
        /* if (createOrderCommand.getItems() == null || createOrderCommand.getItems().isEmpty()) {
             final String errorMessage = "Missing item when creating order " + createOrderCommand.getOrderId();
@@ -64,7 +64,7 @@ public class OrderAggregateCommandHandler {
         BeanUtils.copyProperties(createOrderCommand, orderCreatedEvent);
         //  Sent to event bus. Recevier: @EventSourcingHandler
           ApplyMore applyMore = AggregateLifecycle.apply(orderCreatedEvent);
-          applyMore.andThen(() -> logger.info("OrderAggregateCommandHandler CommandHandler Order " + createOrderCommand.getOrderId()));
+          applyMore.andThen(() -> logger.info("OrderAggregate CommandHandler Order " + createOrderCommand.getOrderId()));
     }
 
     /**

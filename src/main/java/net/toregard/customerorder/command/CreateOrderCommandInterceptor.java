@@ -11,20 +11,25 @@ import java.util.logging.Logger;
 
 /**
  * Interceptor for CreateOrderCommand
- *
+ * <p>
  * Have to register it. In this code this
  */
 @Component
 public class CreateOrderCommandInterceptor implements MessageDispatchInterceptor<CommandMessage<?>> {
-    private static final Logger logger =Logger.getLogger(CreateOrderCommandInterceptor.class.getName());
+    private OrderLookupRepository orderLookupRepository;
+    private static final Logger logger = Logger.getLogger(CreateOrderCommandInterceptor.class.getName());
+
+    public CreateOrderCommandInterceptor(OrderLookupRepository orderLookupRepository) {
+        this.orderLookupRepository = orderLookupRepository;
+    }
+
     /**
      * Intercepts a message right before it is dispatched to the Message Bus.
      *
-     *
      * @param messages The Messages to pre-process
-     *                  Input : <Integer=command index,CommandMessage
+     *                 Input : <Integer=command index,CommandMessage
      * @return function that process messages
-     *         Second CommandMessage<?> is the result of the processing
+     * Second CommandMessage<?> is the result of the processing
      * @throws Exception any exception that occurs during processing
      */
     @NotNull
@@ -32,15 +37,20 @@ public class CreateOrderCommandInterceptor implements MessageDispatchInterceptor
     public BiFunction<Integer, CommandMessage<?>, CommandMessage<?>> handle(@NotNull List<? extends CommandMessage<?>> messages) {
         return (index, command) -> {
             CreateOrderCommand createOrderCommand = (CreateOrderCommand) command.getPayload();
-            if(CreateOrderCommand.class.equals(command.getPayload())){
-              if (createOrderCommand.getItems() == null || createOrderCommand.getItems().isEmpty()) {
-            final String errorMessage = "Missing item when creating order " + createOrderCommand.getOrderId();
-            logger.info(errorMessage);
-            throw new OrderItemException(1, errorMessage);
-        }
+            if (CreateOrderCommand.class.equals(command.getPayload())) {
+                OrderLookUpEntity orderLookUpEntity = orderLookupRepository.findByOrderId(createOrderCommand.getOrderId());
+                if (orderLookUpEntity != null) {
+                    final String errorMessage = "Duplicate orderId " + createOrderCommand.getOrderId();
+                    logger.info(errorMessage);
+                    throw new OrderItemException(1, errorMessage);
+                }
+                if (createOrderCommand.getItems() == null || createOrderCommand.getItems().isEmpty()) {
+                    final String errorMessage = "Missing item when creating order " + createOrderCommand.getOrderId();
+                    logger.info(errorMessage);
+                    throw new OrderItemException(1, errorMessage);
+                }
             }
             return command;
         };
-
     }
 }
