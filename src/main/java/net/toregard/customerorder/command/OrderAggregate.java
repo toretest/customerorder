@@ -48,23 +48,28 @@ public class OrderAggregate {
      *
      * Command handle function. Register to the event bus og type CreateOrderCommand.
      *
+     * Validation is done on interceptor
+     *
      * Can validate here!
      * Create a event here!
      * @param createOrderCommand
      */
     @CommandHandler
     public OrderAggregate(CreateOrderCommand createOrderCommand) {
-        //Validate move to the interceptor
-       /* if (createOrderCommand.getItems() == null || createOrderCommand.getItems().isEmpty()) {
-            final String errorMessage = "Missing item when creating order " + createOrderCommand.getOrderId();
-            logger.info(errorMessage);
-            throw new OrderItemException(1, errorMessage);
-        }*/
         OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent();
         BeanUtils.copyProperties(createOrderCommand, orderCreatedEvent);
-        //  Sent to event bus. Recevier: @EventSourcingHandler
+        //  Sent to event bus. Receiver: @EventSourcingHandler
           ApplyMore applyMore = AggregateLifecycle.apply(orderCreatedEvent);
           applyMore.andThen(() -> logger.info("OrderAggregate CommandHandler Order " + createOrderCommand.getOrderId()));
+    }
+
+    @CommandHandler
+    public OrderAggregate(UpdateOrderCommand updateOrderCommand) {
+        OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent();
+        BeanUtils.copyProperties(updateOrderCommand, orderCreatedEvent);
+        //  Sent to event bus. Receiver: @EventSourcingHandler
+          ApplyMore applyMore = AggregateLifecycle.apply(orderCreatedEvent);
+          applyMore.andThen(() -> logger.info("OrderAggregate CommandHandler Order " + updateOrderCommand.getOrderId()));
     }
 
     /**
@@ -87,6 +92,14 @@ public class OrderAggregate {
         this.OrderId = orderCreatedEvent.getOrderId();
         this.customerId = orderCreatedEvent.getCustomerId();
         this.items.addAll(orderCreatedEvent.getItems());
+    }
+
+    @EventSourcingHandler
+    public void on(UpdateOrderCommand updateOrderCommand) {
+        logger.info("EventSourcingHandler Order " + updateOrderCommand.getOrderId());
+        this.OrderId = updateOrderCommand.getOrderId();
+        this.customerId = updateOrderCommand.getCustomerId();
+        this.items.addAll(updateOrderCommand.getItems());
     }
 
 }

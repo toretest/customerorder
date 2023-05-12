@@ -8,7 +8,9 @@ import java.util.List;
 
 @Data
 @Builder
-public class CreateOrderRestModel {
+public class UpdateOrderRestModel {
+    @NotNull
+    private String orderId;
     @NotNull
     private String customerId;
     @NotNull

@@ -1,5 +1,7 @@
 package net.toregard.customerorder.command;
 
+import net.toregard.customerorder.command.exceptions.OrderCreateException;
+import net.toregard.customerorder.command.exceptions.OrderUpdateException;
 import org.axonframework.commandhandling.CommandMessage;
 import org.axonframework.messaging.MessageDispatchInterceptor;
 import org.jetbrains.annotations.NotNull;
@@ -36,18 +38,28 @@ public class CreateOrderCommandInterceptor implements MessageDispatchInterceptor
     @Override
     public BiFunction<Integer, CommandMessage<?>, CommandMessage<?>> handle(@NotNull List<? extends CommandMessage<?>> messages) {
         return (index, command) -> {
-            CreateOrderCommand createOrderCommand = (CreateOrderCommand) command.getPayload();
             if (CreateOrderCommand.class.equals(command.getPayload())) {
+                CreateOrderCommand createOrderCommand = (CreateOrderCommand) command.getPayload();
                 OrderLookUpEntity orderLookUpEntity = orderLookupRepository.findByOrderId(createOrderCommand.getOrderId());
                 if (orderLookUpEntity != null) {
                     final String errorMessage = "Duplicate orderId " + createOrderCommand.getOrderId();
                     logger.info(errorMessage);
-                    throw new OrderItemException(1, errorMessage);
+                    throw new OrderCreateException(1, errorMessage);
                 }
                 if (createOrderCommand.getItems() == null || createOrderCommand.getItems().isEmpty()) {
                     final String errorMessage = "Missing item when creating order " + createOrderCommand.getOrderId();
                     logger.info(errorMessage);
-                    throw new OrderItemException(1, errorMessage);
+                    throw new OrderCreateException(1, errorMessage);
+                }
+            }
+
+            if (UpdateOrderCommand.class.equals(command.getPayload())) {
+                UpdateOrderCommand updateOrderCommand = (UpdateOrderCommand) command.getPayload();
+                OrderLookUpEntity orderLookUpEntity = orderLookupRepository.findByOrderId(updateOrderCommand.getOrderId());
+                if (orderLookUpEntity == null) {
+                    final String errorMessage = "Order does not exist for orderId " + updateOrderCommand.getOrderId();
+                    logger.info(errorMessage);
+                    throw new OrderUpdateException(2, errorMessage);
                 }
             }
             return command;

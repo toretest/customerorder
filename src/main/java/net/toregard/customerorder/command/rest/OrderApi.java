@@ -1,6 +1,7 @@
 package net.toregard.customerorder.command.rest;
 
 import net.toregard.customerorder.command.CreateOrderCommand;
+import net.toregard.customerorder.command.UpdateOrderCommand;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,6 +51,18 @@ public class OrderApi {
                         .build()
         );
     }
+
+     @PutMapping
+    public String updateOrder(@RequestBody UpdateOrderRestModel updateOrderRestModel) {
+         return commandGateway.sendAndWait(
+                UpdateOrderCommand.builder()
+                        .orderId(updateOrderRestModel.getOrderId())
+                        .customerId(updateOrderRestModel.getCustomerId())
+                        .items(updateOrderRestModel.getOrderItems())
+                        .build()
+        );
+    }
+
 
     public List<String> getOrders() {
         return List.of("");

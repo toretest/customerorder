@@ -5,6 +5,7 @@ import net.toregard.customerorder.core.data.OrderEntityRepository;
 import net.toregard.customerorder.core.data.OrderItemEntity;
 import net.toregard.customerorder.core.data.OrderItemEntityRepository;
 import net.toregard.customerorder.core.events.OrderCreatedEvent;
+import net.toregard.customerorder.core.events.OrderUpdateEvent;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.springframework.beans.BeanUtils;
@@ -41,4 +42,20 @@ private final OrderItemEntityRepository orderItemEntityRepository;
         });
     }
 
+    @EventHandler
+    @Transactional
+    public void on(OrderUpdateEvent event) {
+        OrderEntity orderEntity = new OrderEntity();
+        BeanUtils.copyProperties(event, orderEntity);
+        orderEntityRepository.save(orderEntity);
+        event.getItems().forEach(item -> {
+            OrderItemEntity orderItemEntity = new OrderItemEntity();
+            // Link to order
+            orderItemEntity.setOrderId(event.getOrderId());
+            //Map all other properties
+            BeanUtils.copyProperties(item, orderItemEntity);
+            orderItemEntity.setOrderId(event.getOrderId());
+            orderItemEntityRepository.save(orderItemEntity);
+        });
+    }
 }

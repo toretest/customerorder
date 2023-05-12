@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  *
  * Is called by AggreateLifecycle.apply(orderCredEvent) in OrderAggregate.java
  *
- * This class is a side event handler for @see OrderEventHandler to save the order in a lookup table
+ * This class is a side event handler for @see OrderEventHandler to save the orderid in a lookup table
  * All config together using the @ProcessingGroup("customerOrder-group") annotation
  *
  * ProcessingGroup added so it is handle only once and in same thread as other simular annotations
@@ -30,7 +30,12 @@ public class OrderLookupEventsHandler {
         this.orderLookupRepository = orderLookupRepository;
     }
 
-    @EventHandler // This is the annotation that tells Axon that this method is an event handler.
+    /**
+     * // This is the annotation that tells Axon that this method is an event handler.
+     *
+     * @param event
+     */
+    @EventHandler
     public void on(OrderCreatedEvent event) {
         OrderLookUpEntity orderLookUpEntity = new OrderLookUpEntity();
         orderLookUpEntity.setOrderId(event.getOrderId());
